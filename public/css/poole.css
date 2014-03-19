@@ -85,7 +85,7 @@ h1, h2, h3, h4, h5, h6 {
   text-rendering: optimizeLegibility;
 }
 h1 {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
 }
 h2 {
   margin-top: 1rem;
@@ -356,6 +356,10 @@ tbody tr:nth-child(odd) th {
  * Super lightweight (HTML-wise) blog pagination. `span`s are provide for when
  * there are no more previous or next posts to show.
  */
+
+.via {
+	font-size:10px;
+}
 
 .pagination {
   overflow: hidden; /* clearfix */

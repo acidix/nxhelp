@@ -1,0 +1,134 @@
+---
+comments: false
+date: 2011-10-11 13:09:44
+layout: post
+slug: db21015e-on-redhat-5-6
+title: DB21015E on RedHat 5.6
+wordpress_id: 62
+tags:
+- Linux
+---
+
+If you receive the following message trying to connect do a DB2 instance
+
+    
+    [user@host ~]$ db2 connect to INSTANCE
+     DB21015E The Command Line Processor backend process request queue or input
+     queue was not created within the timeout period.
+
+
+Looking into the strace output shows something like
+
+    
+    msgget(0x416b94ef, IPC_CREAT|IPC_EXCL|0610) = -1 ENOSPC (No space left on device)
+
+
+and db2diag.log shows
+
+    
+    PID : 9999 TID : 47272606561216PROC : db2bp
+     INSTANCE: INSANCE NODE : 000
+     FUNCTION: DB2 UDB, oper system services, sqloMLNique, probe:8
+     MESSAGE : ZRC=0x870F0043=-2029060029=SQLO_QUE_EXCEED
+     "Maximum system queue limit exceeded"
+     DIA8559C A message queue limit has been exceeded.
+     CALLED : OS, -, msgget OSERR: ENOSPC (28)
+
+
+Basically that means that
+
+**a) In terms of shared Memory**
+all possible shared memory IDs have been taken (SHMMNI), or allocating a segment of the requested size would cause the system to exceed the system-wide limit on shared memory (SHMALL).
+
+**b) In terms of Semaphores**
+A semaphore set has to be created but the system limit for the maximum number of semaphore sets (SEMMNI), or the system wide maximum number of semaphores (SEMMNS), would be exceeded.
+
+(we'll get to the point that this is *not* our issue here ...)
+
+Next step would be to check the system-wide values to see what we're looking for:
+
+    
+    $ ipcs -l
+
+
+
+    
+    ------ Shared Memory Limits --------
+     max number of segments = 4096
+     max seg size (kbytes) = 67108864
+     max total shared memory (kbytes) = 17179869184
+     min seg size (bytes) = 1
+
+
+
+    
+    ------ Semaphore Limits --------
+     max number of arrays = 128
+     max semaphores per array = 250
+     max semaphores system wide = 32000
+     max ops per semop call = 32
+     semaphore max value = 32767
+
+
+
+    
+    ------ Messages: Limits --------
+     max queues system wide = 16
+     max size of message (bytes) = 65536
+     default max size of queue (bytes) = 65536
+
+
+
+    
+    $ sysctl -a | grep shm
+     vm.hugetlb_shm_group = 0
+     kernel.shmmni = 4096
+     kernel.shmall = 4294967296
+     kernel.shmmax = 68719476736
+
+
+So we have a maximum of 4096 shared memory segments, 128 Semaphore Arrays and 250 Semaphores per Array available. Looks reasonably good so far.
+
+The most concerning parameter in terms of DB2 is this one, and that goes well together with the msgget() system call:
+
+    
+    max queues system wide = 16
+
+
+According to the DB2 Documentation, the maximum number of message queues (MSGMNI) has to be set to at least 16384. Also, the maximum number of Semaphore Arrays should be 1024.
+
+OK, let's do it:
+
+    
+    sysctl -w kernel.msgmni=16384
+    sysctl -w kernel.sem="250 32000 100 1024"
+
+
+Et voila, it's working:
+
+    
+    $ db2 connect to INSTANCE
+
+
+
+    
+    Database Connection Information
+
+
+
+    
+    Database server = DB2/LINUXX8664 9.7.1
+     SQL authorization ID = USER
+     Local database alias = INSTANCE
+
+
+Now, let's make the change persistent:
+
+    
+    echo "kernel.msgmni=16384" >>/etc/sysctl.conf
+    echo "kernel.sem=\"250 32000 100 1024\"" >>/etc/sysctl.conf
+
+
+That's it! Now your DB2 adventures can begin ...
+
+Note: Please see the [official DB2 documentation]((http://publib.boulder.ibm.com/infocenter/db2luw/v9r7/index.jsp?topic=%2Fcom.ibm.db2.luw.qb.server.doc%2Fdoc%2Ft0008238.html).

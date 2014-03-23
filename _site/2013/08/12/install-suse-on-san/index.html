@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Safely install SuSE Linux Enterprise Server on a SAN Volume &middot; nxhelp.com
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/lanyon.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Serif:400,400italic,700|Droid+Sans:400">
+  <link rel="stylesheet" href="http://weloveiconfonts.com/api/?family=entypo">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  <!-- Google Analytics -->
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-146052-15', 'getpoole.com');
+    ga('send', 'pageview');
+  </script>
+</head>
+
+
+  <body class="theme-base-0d">
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox" checked>
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p></p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">Home</a>
+
+    
+
+    
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about/">About</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/archive/">Archive</a>
+        
+      
+    
+      
+    
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/projects/">Projects</a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/acidix/nxhelp">GitHub project</a>
+    <span class="sidebar-nav-item">Currently v1.0.0</span>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>
+      &copy; 2014. All rights reserved.
+    </p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+          <h3 class="masthead-title">
+            <a href="/" title="Home">nxhelp.com</a>
+            <small>by Thomas Uhde</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content" id="container">
+        <div class="post">
+  <h1 class="post-title post-title-blog"> <a href="">Safely install SuSE Linux Enterprise Server on a SAN Volume</a></h1>
+    
+    <span class="post-date">August 12th 2013</span>
+    
+   <span class="social">[ <a target="_blank" rel="nofollow" href="https://twitter.com/intent/tweet?original_referer=%2F2013%2F08%2F12%2Finstall-suse-on-san%2F&text=Safely+install+SuSE+Linux+Enterprise+Server+on+a+SAN+Volume&url=http%3A%2F%2Fnxhelp.com%2F%2F2013%2F08%2F12%2Finstall-suse-on-san%2F&via=ThomasUhde" title="Tweet this post">tweet</a> : <a target="_blank" rel="nofollow" href="https://alpha.app.net/intent/post?text=Safely%20install%20SuSE%20Linux%20Enterprise%20Server%20on%20a%20SAN%20Volume%20%2D%20http%3A%2F%2Fnxhelp.com%2F%2F2013%2F08%2F12%2Finstall-suse-on-san%2F">adn</a>]</span>
+  <p>Running diskless servers sounds like a great idea - if it wasn&#39;t for the fiddling around with auto-install scripts to finally get to a working system. I want to share and comment on my AutoYaST configuration that has served me well over the last couple of months.</p>
+
+<!-- more -->
+
+<p>The only thing this solution depends on is that the device you want to install on is connected an Lun-ID 00 - which is a prerequisite for SAN boot for most controllers anyway.</p>
+
+<h2>Bootloader Configuration</h2>
+
+<p>The initial bootloader configuration is rather straightforward. Simply setting it to <code>(hd0)</code>, deciding to bother about selecting the right <code>hd0</code> later and moving on:</p>
+<div class="highlight"><pre><code class="xml language-xml" data-lang="xml"><span class="nt">&lt;loader_type&gt;</span>grub<span class="nt">&lt;/loader_type&gt;</span>
+<span class="nt">&lt;sections</span> <span class="na">config:type=</span><span class="s">&quot;list&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;section&gt;</span>
+        <span class="nt">&lt;append&gt;</span>ksdevice=bootif locale=en_US text priority=critical resume=/dev/vg_%%HOSTNAME%%/lv_swap splash=silent crashkernel=256M-:128M showopts<span class="nt">&lt;/append&gt;</span>
+        <span class="nt">&lt;image&gt;</span>(hd0,0)/vmlinuz-3.0.13-0.27-default<span class="nt">&lt;/image&gt;</span>
+        <span class="nt">&lt;initial&gt;</span>1<span class="nt">&lt;/initial&gt;</span>
+        <span class="nt">&lt;initrd&gt;</span>(hd0,0)/initrd-3.0.13-0.27-default<span class="nt">&lt;/initrd&gt;</span>
+        <span class="nt">&lt;lines_cache_id&gt;</span>0<span class="nt">&lt;/lines_cache_id&gt;</span>
+        <span class="nt">&lt;name&gt;</span>SLES for SAP Applications - 3.0.13-0.27<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;original_name&gt;</span>linux<span class="nt">&lt;/original_name&gt;</span>
+        <span class="nt">&lt;root&gt;</span>/dev/vg_%%HOSTNAME%%/lv_root<span class="nt">&lt;/root&gt;</span>
+        <span class="nt">&lt;type&gt;</span>image<span class="nt">&lt;/type&gt;</span>
+    <span class="nt">&lt;/section&gt;</span>
+</code></pre></div>
+<h2>Pre-Scripts</h2>
+
+<p>Here things are getting a bit more complicated. In the Pre-Script I am doing 2 things:</p>
+
+<ol>
+<li>Renaming the volume group to incorporate the hostname</li>
+<li>Selecting the right volume to install the system on</li>
+</ol>
+
+<p>Here is my pre-script. The magic is in assigning the <code>$mpathvol</code> variable. Paying attention to only use commands that are actually available at this stage of the install is crucial here.</p>
+
+<p>See that I am using 2 strings to match against the <code>/proc/scsi/scsi</code> output - which strings you need highly depends on the SAN setup you have. I recommend checking on sn installed system to find a string that&#39;s not too general and lets you find the device(s) safely.</p>
+<div class="highlight"><pre><code class="xml language-xml" data-lang="xml"><span class="nt">&lt;pre-scripts</span> <span class="na">config:type=</span><span class="s">&quot;list&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;script&gt;</span>
+        <span class="nt">&lt;debug</span> <span class="na">config:type=</span><span class="s">&quot;boolean&quot;</span><span class="nt">&gt;</span>false<span class="nt">&lt;/debug&gt;</span>
+        <span class="nt">&lt;feedback</span> <span class="na">config:type=</span><span class="s">&quot;boolean&quot;</span><span class="nt">&gt;</span>true<span class="nt">&lt;/feedback&gt;</span>
+        <span class="nt">&lt;filename&gt;</span>config-hostname.sh<span class="nt">&lt;/filename&gt;</span>
+        <span class="nt">&lt;interpreter&gt;</span>shell<span class="nt">&lt;/interpreter&gt;</span>
+        <span class="nt">&lt;source&gt;</span><span class="cp">&lt;![CDATA[</span>
+<span class="cp">#!/bin/bash</span>
+<span class="cp"># Find multipathed volume on LUN ID 00</span>
+<span class="cp"># IBM is for volumes mapped by SVC</span>
+<span class="cp"># WD3000 is for local devices of IBM Blades</span>
+<span class="cp">mpathvol=\$(cat /proc/scsi/scsi | egrep -B1 &quot;IBM|WD3000&quot; | grep &quot;Lun: 00&quot; | while read x1 dev x2 chan x3 id x4 lun; do echo \${dev/scsi/}\:\${chan:1}\:\${id:1}\:\${lun:1}; done | while read device; do ls -1 /sys/class/scsi_device/\$device/device/block; done | tr &#39;\n&#39; &#39;|&#39; | sed &#39;s/|\$/\n/g&#39; | while read search; do multipath -ll | egrep -w -B3 &quot;\$search&quot;; done | head -n1 | cut -d&quot; &quot; -f2)</span>
+
+<span class="cp"># Set the correct Volume-Group Name</span>
+<span class="cp">cat /tmp/profile/autoinst.xml | sed &quot;s,%%HOSTNAME%%,`echo \$HOSTNAME | cut -d&quot;.&quot; -f1`,g&quot; &gt; /tmp/profile/step1.xml</span>
+
+<span class="cp"># Set the correct root device &amp; LVM settings</span>
+<span class="cp"># Check if we have a multipathed environment</span>
+<span class="cp">if [ &quot;_\$mpathvol&quot; != &quot;_&quot; ]; then</span>
+<span class="cp">    cat /tmp/profile/step1.xml | sed &quot;s,/dev/sda,/dev/\${mpathvol},g&quot; &gt;/tmp/profile/modified.xml</span>
+
+<span class="cp">    # Do not paste the &quot;Enable all devices for LVM&quot; snipped here as LVM will spit on the reoccurrence of devices by path</span>
+<span class="cp">else</span>
+<span class="cp">    mv /tmp/profile/step1.xml /tmp/profile/modified.xml</span>
+
+<span class="cp">    # Enable all devices for LVM</span>
+<span class="cp">    sed -i &#39;s#\[ &quot;r|/dev/\.\*/by-path/\.\*|&quot;, &quot;a|/dev/mapper/\.\*|&quot;, &quot;a|/dev/\.\*/by-id/\.\*|&quot;, &quot;r/\.\*/&quot; \]#\[ &quot;a/\.\*/&quot; \]#g&#39; /etc/lvm/lvm.conf</span>
+<span class="cp">fi</span>
+
+<span class="cp">]]&gt;</span>
+        <span class="nt">&lt;/source&gt;</span>
+    <span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;/pre-scripts&gt;</span>
+</code></pre></div>
+<p>As long as you assign the final autoyast configuration to <code>/tmp/profile/modified.xml</code> the installer will pick it up and use it instead of the autoinst.xml.</p>
+
+<h2>Post-Scripts</h2>
+
+<p>Here we are, having our system installed on the correct disk - so we should be good to go. Wrong. The system will only boot if it&#39;s really (really) diskless. As soon as there&#39;s another local disk we&#39;re screwed. Grub will install on <code>hd0</code>, and that&#39;s the local disk we don&#39;t want it to install on. I am working around this with 2 post-scripts.</p>
+
+<p>The reason I have 2 post scripts is actually a bit complicated. The first script doesn&#39;t run chrooted so we can still be sure to have multipath support that&#39;ll be crucial for getting the SCSI-ID of the device. The second script however does run chrooted to make sure we&#39;re using the correct grub commands to install the bootloader (plus, the bootloader will install in this stage and our &#39;device.map&#39; would get overwritten by the installer):</p>
+<div class="highlight"><pre><code class="xml language-xml" data-lang="xml"><span class="nt">&lt;chroot-scripts</span> <span class="na">config:type=</span><span class="s">&quot;list&quot;</span><span class="nt">&gt;</span>
+     <span class="nt">&lt;script&gt;</span>
+         <span class="nt">&lt;debug</span> <span class="na">config:type=</span><span class="s">&quot;boolean&quot;</span><span class="nt">&gt;</span>false<span class="nt">&lt;/debug&gt;</span>
+         <span class="nt">&lt;feedback</span> <span class="na">config:type=</span><span class="s">&quot;boolean&quot;</span><span class="nt">&gt;</span>false<span class="nt">&lt;/feedback&gt;</span>
+         <span class="nt">&lt;filename&gt;</span>config.sh<span class="nt">&lt;/filename&gt;</span>
+         <span class="nt">&lt;interpreter&gt;</span>shell<span class="nt">&lt;/interpreter&gt;</span>
+         <span class="nt">&lt;chrooted</span> <span class="na">config:type=</span><span class="s">&quot;boolean&quot;</span><span class="nt">&gt;</span>false<span class="nt">&lt;/chrooted&gt;</span>
+         <span class="nt">&lt;source&gt;</span><span class="cp">&lt;![CDATA[</span>
+<span class="cp">#!/bin/bash</span>
+<span class="cp">mpathid=\$(cat /proc/scsi/scsi | egrep -B1 &quot;IBM|WD3000&quot; | grep &quot;Lun: 00&quot; | while read x1 dev x2 chan x3 id x4 lun; do echo \${dev/scsi/}\:\${chan:1}\:\${id:1}\:\${lun:1}; done | while read device; do ls -1 /sys/class/scsi_device/\$device/device/block; done | tr &#39;\n&#39; &#39;|&#39; | sed &#39;s/|\$/\n/g&#39; | while read search; do multipath -ll | egrep -w -B3 &quot;\$search&quot;; done | head -n1 | cut -d&quot; &quot; -f1)</span>
+
+<span class="cp"># Set the correct root device &amp; LVM settings</span>
+<span class="cp"># Check if we have a multipathed environment</span>
+<span class="cp">if [ &quot;_\$mpathid&quot; != &quot;_&quot; ]; then</span>
+<span class="cp">    echo -e &quot;(hd0)\t/dev/disk/by-id/scsi-\$mpathid&quot; &gt;/boot/grub/device.map</span>
+<span class="cp">    echo -e &quot;(hd0)\t/dev/disk/by-id/scsi-\$mpathid&quot; &gt;/mnt/etc/device.map</span>
+<span class="cp">fi</span>
+<span class="cp">]]&gt;</span>
+        <span class="nt">&lt;/source&gt;</span>
+    <span class="nt">&lt;/script&gt;</span>
+    <span class="nt">&lt;script&gt;</span>
+        <span class="nt">&lt;debug</span> <span class="na">config:type=</span><span class="s">&quot;boolean&quot;</span><span class="nt">&gt;</span>false<span class="nt">&lt;/debug&gt;</span>
+        <span class="nt">&lt;feedback</span> <span class="na">config:type=</span><span class="s">&quot;boolean&quot;</span><span class="nt">&gt;</span>false<span class="nt">&lt;/feedback&gt;</span>
+        <span class="nt">&lt;filename&gt;</span>config-chroot.sh<span class="nt">&lt;/filename&gt;</span>
+        <span class="nt">&lt;interpreter&gt;</span>shell<span class="nt">&lt;/interpreter&gt;</span>
+        <span class="nt">&lt;chrooted</span> <span class="na">config:type=</span><span class="s">&quot;boolean&quot;</span><span class="nt">&gt;</span>true<span class="nt">&lt;/chrooted&gt;</span>
+        <span class="nt">&lt;source&gt;</span><span class="cp">&lt;![CDATA[</span>
+<span class="cp">#!/bin/bash</span>
+<span class="cp">if [ -f /etc/device.map ]; then</span>
+<span class="cp">    mv /etc/device.map /boot/grub/device.map</span>
+<span class="cp">    /usr/sbin/grub &lt;&lt;EOF</span>
+<span class="cp">root (hd0,0)</span>
+<span class="cp">setup (hd0)</span>
+<span class="cp">EOF</span>
+<span class="cp">fi</span>
+<span class="cp">]]&gt;</span>
+        <span class="nt">&lt;/source&gt;</span>
+    <span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;/chroot-scripts&gt;</span>
+</code></pre></div>
+<p>I am planning to do a Debian / Ubuntu preseed version as well, so stay tuned.</p>
+
+<p>You can download the whole AutoYaST configuration here: <a href="/2013/08/12/install-suse-on-san/autoyast_san.xml">autoyast_san.xml</a></p>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+    
+  <div class="archive">
+  
+  <h3 class="post-title post-title-ext">
+    <time>09 Dec</time>
+    <a href="http://professionalvmware.com/2008/12/share-and-share-alike-sharing-vmdks-between-virtual-machines/">
+  
+Sharing a virtual disk between virtual machines in VMWare vSphere 5.5
+      </a>
+    </h3>
+  </div>
+    
+  <div class="archive">
+  
+  <h3 class="post-title post-title-ext">
+    <time>26 Sep</time>
+    <a href="http://ariekanarie.nl/archives/211/remote-kernel-upgrade-with-debianubuntu-and-grub2">
+  
+Remote Kernel upgrade with Debian/Ubuntu and Grub2
+      </a>
+    </h3>
+  </div>
+    
+  <div class="archive">
+  
+  <h3 class="post-title post-title-ext">
+    <time>09 Sep</time>
+    <a href="http://raxcloud.blogspot.de/2013/02/documenting-python-code-using-sphinx.html">
+  
+Documenting Python code using Sphinx and GitHub
+      </a>
+    </h3>
+  </div>
+    
+</div>
+
+      </div>
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      nxhelp.com &middot; by Thomas Uhde
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/lanyon.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Serif:400,400italic,700|Droid+Sans:400">
+  <link rel="stylesheet" href="http://weloveiconfonts.com/api/?family=entypo">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  <!-- Google Analytics -->
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-146052-15', 'getpoole.com');
+    ga('send', 'pageview');
+  </script>
+</head>
+
+
+  <body class="theme-base-0d">
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox" checked>
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p></p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">Home</a>
+
+    
+
+    
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about/">About</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/archive/">Archive</a>
+        
+      
+    
+      
+    
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/projects/">Projects</a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/acidix/nxhelp">GitHub project</a>
+    <span class="sidebar-nav-item">Currently v1.0.0</span>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>
+      &copy; 2014. All rights reserved.
+    </p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+          <h3 class="masthead-title">
+            <a href="/" title="Home">nxhelp.com</a>
+            <small>by Thomas Uhde</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content" id="container">
+        <div class="posts">
+  
+  <div class="post">
+  
+  <h1 class="post-title post-title-blog">
+	  <a href="/2011/10/11/local-rhel-installation-source/">
+	
+        Local RHEL Installation Source
+      </a>
+    </h1>
+
+    
+    <span class="post-date">October 11th 2011</span>
+    
+    
+    <span class="social">[ <a target="_blank" rel="nofollow" href="https://twitter.com/intent/tweet?original_referer=%2F2011%2F10%2F11%2Flocal-rhel-installation-source%2F&text=Local+RHEL+Installation+Source&url=http%3A%2F%2Fnxhelp.com%2F%2F2011%2F10%2F11%2Flocal-rhel-installation-source%2F&via=ThomasUhde" title="Tweet this post">tweet</a> : <a target="_blank" rel="nofollow" href="https://alpha.app.net/intent/post?text=Local%20RHEL%20Installation%20Source%20%2D%20http%3A%2F%2Fnxhelp.com%2F%2F2011%2F10%2F11%2Flocal-rhel-installation-source%2F">adn</a>]</span>
+    </span>
+    
+      
+         <p>For RedHat System which are not connected to the internet, it&#39;s good to have a local dvd as an installation source. Here&#39;s how to do it:</p>
+
+<p>First, mount the Installation DVD:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir /media/cdrom &amp;&amp; mount /dev/cdrom /media/cdrom
+</code></pre></div>
+<p>Now, let&#39;s quickly create an entry in <code>/etc/yum.repos.d/</code> that points to your dvd</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">cat &gt;/etc/yum.repos.d/rhel_dvd.repo &lt;&lt;EOF
+[dvd]
+mediaid=$(head -n1 /media/cdrom/.discinfo)
+name=RedHat Enterprise Linux $(sed -n &#39;2p&#39; /media/cdrom/.discinfo | rev | cut -c -3 | rev) DVD
+baseurl=file:///media/cdrom/Server
+EOF
+</code></pre></div>
+<p>That&#39;s it! Now you can use the following command to install packages without contacting RedHat Network:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install strace --noplugins
+</code></pre></div>
+<p>For further information, visit the <a href="https://access.redhat.com/kb/docs/DOC-9744">Official RedHat Article</a>.</p>
+
+      
+    
+  </div>
+  
+  <div class="post">
+  
+  <h1 class="post-title post-title-blog">
+	  <a href="/2011/10/03/citrix-icaclient-segfaulting-on-ubuntu-11-04/">
+	
+        Citrix ICAClient dumping core on Ubuntu 11.04
+      </a>
+    </h1>
+
+    
+    <span class="post-date">October 3rd 2011</span>
+    
+    
+    <span class="social">[ <a target="_blank" rel="nofollow" href="https://twitter.com/intent/tweet?original_referer=%2F2011%2F10%2F03%2Fcitrix-icaclient-segfaulting-on-ubuntu-11-04%2F&text=Citrix+ICAClient+dumping+core+on+Ubuntu+11.04&url=http%3A%2F%2Fnxhelp.com%2F%2F2011%2F10%2F03%2Fcitrix-icaclient-segfaulting-on-ubuntu-11-04%2F&via=ThomasUhde" title="Tweet this post">tweet</a> : <a target="_blank" rel="nofollow" href="https://alpha.app.net/intent/post?text=Citrix%20ICAClient%20dumping%20core%20on%20Ubuntu%2011.04%20%2D%20http%3A%2F%2Fnxhelp.com%2F%2F2011%2F10%2F03%2Fcitrix-icaclient-segfaulting-on-ubuntu-11-04%2F">adn</a>]</span>
+    </span>
+    
+      
+         <p>After switching to Ubuntu 11.04 from Fedora 15 I noticed that I wasn&#39;t able to connect to our internal Citrix environment using ICAClient. Having followed the usual documentation (listed below) I was presented with the following:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">*** glibc detected *** /usr/lib/ICAClient/wfica: free(): invalid next size (fast): 0x09c6e8b0 ***
+      ======= Backtrace: =========
+      ...
+
+
+
+
+The process is actually core-dumping in libproxy.so:
+
+
+
+
+Program terminated with signal 11, Segmentation fault.
+      #0  0xf70d8f72 in nbc_connect () from /usr/lib/ICAClient/libproxy.so
+      (gdb) bt
+      #0  0xf70d8f72 in nbc_connect () from /usr/lib/ICAClient/libproxy.so
+      #1  0xf70cd4d6 in NullConnect () from /usr/lib/ICAClient/libproxy.so
+      #2  0xf70ce6cd in ProxyConnect () from /usr/lib/ICAClient/libproxy.so
+      #3  0xf70ce8b1 in PROXYconnect () from /usr/lib/ICAClient/libproxy.so
+      #4  0xf70d8764 in IPSTACKconnect () from /usr/lib/ICAClient/libproxy.so
+      #5  0x080c3757 in ?? ()
+      #6  0x080c2518 in ?? ()
+      #7  0xf70c094a in ?? () from /usr/lib/ICAClient/PDCRYPT1.DLL
+      #8  0x080c060a in WdSetInformation ()
+      #9  0x080ffd8a in wdConnect ()
+      #10 0x08100f9b in NCSbind ()
+      #11 0x08077d09 in OldMain ()
+      #12 0x08137f4a in PlatAppMain ()
+      #13 0x080feda6 in AppMain ()
+      #14 0x08137eda in main ()
+</code></pre></div>
+<p>However, Library dependencies on the libproxy.so looked fine:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ ldd /usr/lib/ICAClient/libproxy.so
+      linux-gate.so.1 =&gt;  (0xf7732000)
+      libc.so.6 =&gt; /lib32/libc.so.6 (0xf7594000)
+      /lib/ld-linux.so.2 (0xf7733000)
+</code></pre></div>
+<p>In the strace output I could see it was trying to parse a proxy configuration - having already unset all proxy variables (http<em>proxy, https</em>proxy, ftp_proxy) I was wondering where he was trying to get the proxy configuration from. The following line was the important one:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[pid 15818] open(&quot;/home/i064850/.mozilla/firefox/cuqn88q3.default/prefs.js&quot;, O_RDONLY) = 5
+</code></pre></div>
+<p>It was actually trying to get my proxy configuration from my Firefox Preferences! While one could argue about this decision, it seems to cause my issue - because after moving the .mozilla folder, wfica was finally able to connect!</p>
+
+<p>In the end I found out that this is an issue if you use <strong>Automatic Proxy Configuration</strong> in Firefox together with the Citrix ICA Client. Once you either deactivate or manually specify the proxy setting, it magically works.</p>
+
+<p>I still have to find out where to submit a bug report for ICAClient - probably nowhere ...</p>
+
+<p>[Edit] Bug report <a href="http://forums.citrix.com/message.jspa?messageID=1585465#1585465">posted</a></p>
+
+<p>References: <a href="https://help.ubuntu.com/community/CitrixICAClientHowTo">The Ubuntu ICAClient HowTo</a></p>
+
+      
+    
+  </div>
+  
+</div>
+
+<div class="pagination">
+  
+    <span class="pagination-item older">Older</span>
+  
+  
+    
+      <a class="pagination-item newer" href="/page6">Newer</a>
+    
+  
+</div>
+
+      </div>
+    </div>
+
+  </body>
+</html>

@@ -54,7 +54,7 @@ html {
 }
 @media (min-width: 38rem) {
   html {
-    font-size: 20px;
+    font-size: 14px;
   }
 }
 
@@ -85,25 +85,29 @@ h1, h2, h3, h4, h5, h6 {
   text-rendering: optimizeLegibility;
 }
 h1 {
-  font-size: 2rem;
+  font-size: 1.6rem;
 }
 h2 {
   margin-top: 1rem;
-  font-size: 1.5rem;
+  font-size: 1rem;
 }
 h3 {
   margin-top: 1.5rem;
-  font-size: 1.25rem;
+  font-size: 1rem;
 }
 h4, h5, h6 {
   margin-top: 1rem;
-  font-size: 1rem;
+  font-size: 0.75rem;
 }
 
 /* Body text */
 p {
-  margin-top: 0;
-  margin-bottom: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 0;
+}
+
+blockquote p {
+  margin:0;
 }
 
 strong {
@@ -164,9 +168,10 @@ pre {
   font-size: .8rem;
   line-height: 1.4;
   white-space: pre;
-  white-space: pre-wrap;
+  white-space: pre;
+  overflow: auto;
   word-break: break-all;
-  word-wrap: break-word;
+  word-wrap: normal;
   background-color: #f9f9f9;
 }
 pre code {
@@ -188,14 +193,14 @@ blockquote {
   padding: .5rem 1rem;
   margin: .8rem 0;
   color: #7a7a7a;
-  border-left: .25rem solid #e5e5e5;
+  border-left: .25rem solid #6a9fb5;
+  font-size:14px;
 }
 blockquote p:last-child {
   margin-bottom: 0;
 }
 @media (min-width: 30rem) {
   blockquote {
-    padding-right: 5rem;
     padding-left: 1.25rem;
   }
 }
@@ -255,15 +260,21 @@ tbody tr:nth-child(odd) th {
  * Container
  *
  * Center the page content.
- */
 
 .container {
-  max-width: 38rem;
-  padding-left:  1rem;
-  padding-right: 1rem;
-  margin-left:  auto;
-  margin-right: auto;
+    max-width: 38rem;
+    padding-left:  1rem;
+    padding-right: 1rem;
+    margin-left:  5rem;
+    margin-right: auto;
 }
+@media (max-width: 70rem) {
+  .container {
+    margin-left:  auto;
+  }
+}
+ */
+
 
 
 /*
@@ -361,7 +372,7 @@ tbody tr:nth-child(odd) th {
   overflow: hidden; /* clearfix */
   margin-left: -1rem;
   margin-right: -1rem;
-  font-family: "PT Sans", Helvetica, Arial, sans-serif;
+  font-family: "Droid Sans", Helvetica, Arial, sans-serif;
   color: #ccc;
   text-align: center;
 }

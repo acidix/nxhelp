@@ -1,0 +1,17 @@
+- name: pyRackDS
+  owner: acidix
+  github: pyRackDS
+  lang: python
+  summary: pyRackDS is a tool to extract data from Racktables and run it through a templating engine.
+
+- name: pyVspDS
+  owner: acidix
+  github: PyVspDS
+  lang: python
+  summary: pyVspDS is used to create and update Racktables attributes from VMWare vSphere.
+
+- name: pyRackSync
+  owner: acidix
+  github: pyRackSync
+  lang: python
+  summary: pyRackSync is a synchronization library using the Racktables API

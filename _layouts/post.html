@@ -3,23 +3,32 @@ layout: default
 ---
 
 <div class="post">
-  <h1 class="post-title">{{ page.title }}</h1>
-  <span class="post-date">{{ page.date | date_to_string }}</span>
+  <h1 class="post-title post-title-blog"> <a href="{{ post.url }}">{{ page.title }}</a></h1>
+    {% if page.date.between?(Date.today - 30, Date.today) %}
+    <span class="post-date">{{ page.date | timeago }}</span>
+    {% else %}
+    <span class="post-date">{{ page.date | pretty }}</span>
+    {% endif %}
+   <span class="social">[ <a target="_blank" rel="nofollow" href="https://twitter.com/intent/tweet?original_referer={{ page.url | url_encode }}&text={{ page.title | replace:' ','+' }}&url={{ site.url | url_encode }}{{ page.url | url_encode}}&via=ThomasUhde" title="Tweet this post">tweet</a> : <a target="_blank" rel="nofollow" href="https://alpha.app.net/intent/post?text={{ page.title | replace:' ','%20' }}%20%2D%20{{ site.url | url_encode }}{{ page.url | url_encode }}">adn</a>]</span>
   {{ content }}
 </div>
 
 <div class="related">
   <h2>Related Posts</h2>
-  <ul class="related-posts">
     {% for post in site.related_posts limit:3 %}
-      <li>
-        <h3>
-          <a href="{{ post.url }}">
-            {{ post.title }}
-            <small>{{ post.date | date_to_string }}</small>
-          </a>
-        </h3>
-      </li>
+  <div class="archive">
+  {% if post.external_url %}
+  <h3 class="post-title post-title-ext">
+    <time>{{ post.date | date:"%d %b" }}</time>
+    <a href="{{ post.external_url }}">
+  {% else %}
+  <h3 class="post-title post-title-blog">
+    <time>{{ post.date | date:"%d %b" }}</time>
+    <a href="{{ post.url }}">
+  {% endif %}
+{{ post.title }}
+      </a>
+    </h3>
+  </div>
     {% endfor %}
-  </ul>
 </div>

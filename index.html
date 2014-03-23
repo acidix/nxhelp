@@ -5,21 +5,35 @@ layout: default
 <div class="posts">
   {% for post in paginator.posts %}
   <div class="post">
-  <h1 class="post-title">
-	{% if post.external_url %}
+  {% if post.external_url %}
+  <h1 class="post-title post-title-ext">
 	  <a href="{{ post.external_url }}">
 	{% else %}
+  <h1 class="post-title post-title-blog">
 	  <a href="{{ post.url }}">
 	{% endif %}
         {{ post.title }}
       </a>
     </h1>
 
-    <span class="post-date">{{ post.date | date_to_string }}</span>
-
-    {{ post.content }}
+    {% if post.date.between?(Date.today - 30, Date.today) %}
+    <span class="post-date">{{ post.date | timeago }}</span>
+    {% else %}
+    <span class="post-date">{{ post.date | pretty }}</span>
+    {% endif %}
     {% if post.external_url %}
-    <span class="via">via {{ post.external_url }}</span>
+    <span class="via">via {{ post.external_url | domain_name }}</span>
+    {% else %}
+    <span class="social">[ <a target="_blank" rel="nofollow" href="https://twitter.com/intent/tweet?original_referer={{ post.url | url_encode }}&text={{ post.title | replace:' ','+' }}&url={{ site.url | url_encode }}{{ post.url | url_encode}}&via=ThomasUhde" title="Tweet this post">tweet</a> : <a target="_blank" rel="nofollow" href="https://alpha.app.net/intent/post?text={{ post.title | replace:' ','%20' }}%20%2D%20{{ site.url | url_encode }}{{ post.url | url_encode }}">adn</a>]</span>
+    {% endif %}</span>
+    {% if post.external_url %}
+      <blockquote>{{ post.content }}</blockquote>
+    {% else %}
+      {% if post.content contains "<!-- more -->" %}
+         <span class="truncate">{{ post.content | split:"<!-- more -->" | first % }}</span>
+      {% else %}
+         {{ post.content | truncatehtml: 100}}
+      {% endif %}
     {% endif %}
   </div>
   {% endfor %}

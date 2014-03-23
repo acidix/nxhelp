@@ -15,7 +15,7 @@ author:
   name:           'Thomas Uhde'
   url:            https://twitter.com/ThomasUhde
 
-paginate:         10
+paginate:         5
 
 # Custom vars
 version:          1.0.0

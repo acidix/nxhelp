@@ -1,0 +1,5 @@
+- name: Racktables
+  owner: Racktables
+  github: racktables
+  lang: php
+  summary: Racktables is a nifty and robust solution for datacenter and server room asset management.

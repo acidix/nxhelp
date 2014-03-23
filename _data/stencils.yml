@@ -1,0 +1,3 @@
+- name: TP-Link Network Equipment
+  file: TP-Link Network Equipment.gstencil
+  summary: Currently only stencils for TL-SG5412F and TL-SG3424 models. May be expanded in the future as needed.

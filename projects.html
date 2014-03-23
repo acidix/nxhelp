@@ -1,0 +1,39 @@
+---
+layout: page
+title: Projects
+---
+
+<div class="posts">
+  {% for member in site.data.projects %}
+  <h2 class="post-title project-{{ member.lang }}">
+    <a href="http://github.com/{{ member.owner }}/{{ member.github }}">
+{{ member.name }}
+      </a>
+  </h2>
+  {{ member.summary }}
+  {% endfor %}
+</div>
+
+<div class="posts">
+<h1 style="margin-top:3rem">OpenSource Contributions</h1>
+  {% for member in site.data.contrib %}
+  <h2 class="post-title project-{{ member.lang }}">
+    <a href="http://github.com/{{ member.owner }}/{{ member.github }}">
+{{ member.name }}
+      </a>
+  </h2>
+  {{ member.summary }}
+  {% endfor %}
+</div>
+
+<div class="posts">
+<h1 style="margin-top:3rem">OmniGraffle Stencils</h1>
+  {% for member in site.data.stencils %}
+  <h2 class="post-title">
+    <a href="/public/files/stencils/{{ member.file }}">
+{{ member.name }}
+      </a>
+  </h2>
+  {{ member.summary }}
+  {% endfor %}
+</div>

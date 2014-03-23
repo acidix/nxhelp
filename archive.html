@@ -1,0 +1,39 @@
+---
+layout: page
+title: Archive
+---
+
+<div class="archive">
+  {% capture siteyear %}{{ site.time | date: '%Y' }}{% endcapture %}
+  {% capture firstpostyear %}{{ site.posts.first.date | date: '%Y' }}{% endcapture %}
+  {% if siteyear != firstpostyear %}
+      <h1>{{ firstpostyear }}</h1>
+  {% else %}
+      <h1>This year's posts</h1>
+  {% endif %}
+  {% for post in site.posts %}
+    {% if post.next %}
+      {% capture year %}{{ post.date | date: '%Y' }}{% endcapture %}
+      {% capture nyear %}{{ post.next.date | date: '%Y' }}{% endcapture %}
+    {% endif %}
+    {% if year != nyear %}
+      <h1>{{ year }}</h1>
+    {% endif %}
+  <div class="archive">
+  {% if post.external_url %}
+  <h3 class="post-title post-title-ext">
+	  <time>{{ post.date | date:"%d %b" }}</time>
+    <a href="{{ post.external_url }}">
+	{% else %}
+  <h3 class="post-title post-title-blog">
+	  <time>{{ post.date | date:"%d %b" }}</time>
+    <a href="{{ post.url }}">
+	{% endif %}
+{{ post.title }}
+      </a>
+    </h3>
+
+  </div>
+  {% endfor %}
+</div>
+

@@ -1,5 +1,11 @@
 ---
 title: Integrating Outlook 2015 and OmniFocus
+comments: true
+layout: post
+tags:
+- Mac
+- OmniFocus
+- Outlook
 ---
 Ever since Microsoft decided to honor the latest changes to the way Mac Apps are built (read: Sandboxing) it's been painful to integrate it to other apps. For me, the most crucial integration is with OmniFocus for task management. The fact that MS seems to be ditching AppleScript support - at least for new features - and completely removed the scripts menu doesn't help either.
 

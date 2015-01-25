@@ -14,3 +14,5 @@ Yesterday I came across a comment by [Brett Terpstra](http://brettterpstra.com) 
 All credit for this edit goes to Rainer & Brett, I was just pressing the keys - no brain work involved :) Here's the script, together with some comments on the [original post](http://rainer.4950.net/2014/06/04/outlook-to-omnifocus2-take-12/): 
 
 [Download Script](https://www.dropbox.com/s/og7ysjf7mc85kx1/Outlook2015-2-OmniFocus.scpt?dl=0)
+
+I tried firing the script from both [FastScripts](http://www.red-sweater.com/fastscripts/) and [BetterTouchTool](http://www.bettertouchtool.net/), both works great and substitutes the Scripts Menu reasonably well.

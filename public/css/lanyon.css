@@ -63,6 +63,9 @@ h2 {
   margin-top: 1.5rem;
   font-size: 1.25rem;
 }
+h3 {
+  font-weight: 400;
+}
 
 p {
   margin-top: 1rem;
@@ -144,7 +147,7 @@ pre {
 
 .masthead {
   padding-top:    1rem;
-  padding-bottom: 1rem;
+  padding-bottom: 1.45rem;
   margin-bottom: 3rem;
   border-bottom: 1px solid #eee;
 }
@@ -443,13 +446,14 @@ time {
 
 .page,
 .post {
-  margin-bottom: 1em;
+  margin-bottom: 2em;
 }
 
 @media (min-width: 800px) {
    .post-title:before{
      position:absolute;
      left: -40px;
+     top: -2px;
      color:rgba(0,0,0,0.2);
      font-family:'entypo';
      float:none;
@@ -474,7 +478,7 @@ time {
 .page-title,
 .post-title,
 .post-title a {
-  color: #303030;
+  color: #606060;
   position:relative;
 }
 .page-title,

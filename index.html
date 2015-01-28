@@ -24,7 +24,7 @@ layout: default
     {% if post.external_url %}
     <span class="via">via {{ post.external_url | domain_name }}</span>
     {% else %}
-    <span class="social">[ <a target="_blank" rel="nofollow" href="https://twitter.com/intent/tweet?original_referer={{ post.url | url_encode }}&text={{ post.title | replace:' ','+' }}&url={{ site.url | url_encode }}{{ post.url | url_encode}}&via=ThomasUhde" title="Tweet this post">tweet</a> : <a target="_blank" rel="nofollow" href="https://alpha.app.net/intent/post?text={{ post.title | replace:' ','%20' }}%20%2D%20{{ site.url | url_encode }}{{ post.url | url_encode }}">adn</a>]</span>
+    <span class="social">[ <a target="_blank" rel="nofollow" href="https://twitter.com/intent/tweet?original_referer={{ post.url | url_encode }}&text={{ post.title | replace:' ','+' }}&url={{ site.url | url_encode }}{{ post.url | url_encode}}&via=ThomasUhde" title="Tweet this post">tweet</a> : <a target="_blank" rel="nofollow" href="https://alpha.app.net/intent/post?text={{ post.title | replace:' ','%20' }}%20%2D%20{{ site.url | url_encode }}{{ post.url | url_encode }}">adn</a> ]</span>
     {% endif %}</span>
     {% if post.external_url %}
       <blockquote>{{ post.content }}</blockquote>

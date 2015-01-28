@@ -9,7 +9,7 @@ layout: default
     {% else %}
     <span class="post-date">{{ page.date | pretty }}</span>
     {% endif %}
-   <span class="social">[ <a target="_blank" rel="nofollow" href="https://twitter.com/intent/tweet?original_referer={{ page.url | url_encode }}&text={{ page.title | replace:' ','+' }}&url={{ site.url | url_encode }}{{ page.url | url_encode}}&via=ThomasUhde" title="Tweet this post">tweet</a> : <a target="_blank" rel="nofollow" href="https://alpha.app.net/intent/post?text={{ page.title | replace:' ','%20' }}%20%2D%20{{ site.url | url_encode }}{{ page.url | url_encode }}">adn</a>]</span>
+   <span class="social">[ <a target="_blank" rel="nofollow" href="https://twitter.com/intent/tweet?original_referer={{ page.url | url_encode }}&text={{ page.title | replace:' ','+' }}&url={{ site.url | url_encode }}{{ page.url | url_encode}}&via=ThomasUhde" title="Tweet this post">tweet</a> : <a target="_blank" rel="nofollow" href="https://alpha.app.net/intent/post?text={{ page.title | replace:' ','%20' }}%20%2D%20{{ site.url | url_encode }}{{ page.url | url_encode }}">adn</a> ]</span>
   {{ content }}
 </div>
 
